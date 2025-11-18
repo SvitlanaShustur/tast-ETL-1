@@ -15,11 +15,31 @@ df = pd.read_csv(url) # завантажуємо дані у DataFrame
 
 
 ### **2. Очищення даних**
-df_1 = df['phone1']
-# df = df.drop("phone2", axis=1) # видаляємо стовпець "phone2"
-df.info()   # перевіряємо інформацію про DataFrame після видалення стовпця
-df['email'] = df['email'].str.lower()
-df['web'] = df['web'].str.lower()
-df['phone1'] = df['phone1'].str.strip()
-df['phone2'] = df['phone2'].str.strip()
-print(df_1)
+#### Перевіряємо записи у стовпці "email", "web", "phone1", "phone2"
+# print(df['first_name'].head(5))
+# print(df['last_name'].head(5))
+# print(df['company_name'].head(5))
+# print(df['address'].head(5))
+# print(df['city'].head(5))
+# print(df['county'].head(5))
+# print(df['postal'].head(5))
+# print(df['phone1'].head(5))
+# print(df['phone2'].head(5))
+# print(df['web'].head(5))
+# # df = df.drop("phone2", axis=1) # видаляємо стовпець "phone2"
+# df['email'] = df['email'].str.lower()
+# df['web'] = df['web'].str.lower()
+
+df['phone1_1'] = df['phone1'].copy() # створюємо копію стовпця "phone1"
+df['phone1_1'] = df['phone1_1'].astype(str).str.replace('-', '', regex=True)    # видаляємо дефіси
+df['phone1_2'] = df['phone1_1'].copy() # створюємо копію стовпця "phone1_1"
+df['phone1_2'] = df['phone1_1'].str[1:] # видаляємо перший символ (0)
+# print(df['phone1_2'].head(5))
+
+df['telephon'] = '+44 ' + df['phone1_2'] # додаємо код країни +44
+df['telephon'] = (
+    df['telephon'].str[:6] + ' ' +  # Беремо перші 6 символів (+441944) і додаємо пробіл
+    df['telephon'].str[6:10] + " " + # Додаємо наступні 4 символи (7700) і додаємо пробіл
+    df['telephon'].str[10:14]               # Додаємо останні 4 символи (1234)
+)  # +44 770
+print(df['telephon'].head(5))
