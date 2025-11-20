@@ -46,6 +46,7 @@ COLUMNS_TO_DROP = []
 
 #1. Видаляємо непотрібні стовпці. Універсальний варіант
 df = df_origin.copy() # створюємо копію DataFrame для збереження оригінальних даних
+print(df)
 if COLUMNS_TO_DROP: # якщо є стовпці для видалення
     print("\n--- delete columns in lisr ---") # виводимо повідомлення
     df = df.drop(colums=[col for col in COLUMNS_TO_DROP if df in df.columns], errors="ignore") # видаляємо стовпці зі списку COLUMNS_TO_DROP, якщо вони є у DataFrame
@@ -56,6 +57,7 @@ if COLUMNS_TO_DROP: # якщо є стовпці для видалення
 # # #         columns.append(col) # додаємо назву стовпця до списку columns
 else:
     print("\n--- no columns to delete ---") # виводимо повідомлення, якщо немає стовпців для видалення
+
 
 # Функція для стандартизації тексту (видалення зайвих пробілів, приведення до рядка)
 def standardize_text(s): # функція для стандартизації тексту
@@ -80,12 +82,12 @@ possible_fax_cols = [c for c in df.columns if ("fax" in c.lower())] # знахо
 # генерація списку
 # [зміна_циклу (з приміненими операціями) for змінна_циклу in де_проходиться]
 # [0, 1, 2, 3, 4] 
-# [n for n in range(4)]
-print("\n--- possible columns ---")
-print("Email columns:", possible_email_cols) # виводимо можливі стовпці з email
-print("Web columns:", possible_web_cols) # виводимо можливі стовпці з web
-print("Phone columns:", possible_phone_cols) # виводимо можливі стовпці з phone
-print("Fax columns:", possible_fax_cols) # виводимо можливі стовпці з fax
+# # [n for n in range(4)]
+# print("\n--- possible columns ---")
+# print("Email columns:", possible_email_cols) # виводимо можливі стовпці з email
+# print("Web columns:", possible_web_cols) # виводимо можливі стовпці з web
+# print("Phone columns:", possible_phone_cols) # виводимо можливі стовпці з phone
+# print("Fax columns:", possible_fax_cols) # виводимо можливі стовпці з fax
 
 # Привести `email` та `web` до нижнього регістру.
 # Застосовуємо функцію стандартизації тексту до всіх стовпців типу object (рядок)
@@ -147,11 +149,80 @@ if name_title:
 else:
     print('\n--- haven `t name ---')
 
+### **3. Створення нових колонок (Feature Engineering)**
+df["full_name"] = df.first_name + " " + df.last_name
 
 
-print(df.head())
 
-### **3. Приклади очищення окремих стовпців**
+
+
+# df1 = df["city2"].str.len() # як другий варіант
+# print(df1.head)
+
+df["city_length"] = df["city"].apply(len)
+# print(df.head)
+
+# користувачі з доменом gmail.com
+df["is_gmail"] = [True if "@gmail.com" in str(s).lower() else False for s in df["email"]]
+# print(df.head)
+
+
+### **4. Фільтрація даних**
+
+# print("\n--- підвибірка ---")
+
+gmail_user = df.loc[df["is_gmail"] == True].copy()
+# print(gmail_user)
+
+# print("Gmail users:", len(gmail_user))
+
+# працівники компанії з LLC або Ltd
+
+# df["company_name"] 
+
+# df["company_name"] = df ["company_name"].fillna("")
+mask_LLC_Ltd = df.company_name.str.contains(r"\b(LLC|LLc|Llc|llc|LTD|LTd|Ltd|ltd)\b", regex=True, na=False)
+# print(mask_LLC_Ltd)
+
+company_LLC_Ltd = df.loc[mask_LLC_Ltd].copy()
+# print(company_LLC_Ltd )
+# print("Company LLC and Ltd:", len(company_LLC_Ltd))
+
+
+
+
+### **5. Позиційна вибірка (iloc)**
+
+
+
+try:
+    first_10_cols_2_5 = df.iloc[:10,2:6]
+    print("\nПерші 10 рядків + колонки 2 - 5:")
+    print(first_10_cols_2_5)
+except Exception as e:
+    print("перші 10 рядків + колонки 2 - 5:", e)
+
+every_10th = df.iloc[::10, :].copy()
+print("\nevery_10th")
+print(every_10th)
+
+random_5 = df.sample(5)
+print("\random_5")
+print(random_5) 
+
+
+
+### **6. Групування та статистика**
+
+
+
+
+
+
+
+
+
+#   3. Приклади очищення окремих стовпців**
 
 #### Перевіряємо записи у стовпці "email", "web", "phone1", "phone2"
 # print(df['first_name'].head(5)) # виводимо перші 5 записів стовпця "first_name"
