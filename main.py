@@ -99,8 +99,57 @@ for col in possible_web_cols: # ітеруємося по можливих ст�
     df[col] = df[col].str.lower() # перетворюємо всі символи на малі літери
 
 
-### **3. Стандартизувати формат текстових полів. ###
+def clean_phone(x):
+    if pd.isna(x): # перевіряємо на пропущене значення
+        return np.nan # повертаємо NaN, якщо значення пропущенеs
+    s = str(x)
+    # варіарт 1
+    # plus = ""   # перевіряємо, чи починається рядок із символу "+"
+    # if s.startswith("+"): # якщо так — зберігаємо цей знак у змінну plus
+    #     plus = "+"
 
+    # Варіант 2
+    plus = "+" if s.startswith("+") else "" # якщо рядок починається з "+", зберігаємо знак "+", інакше залишаємо порожній рядок
+
+    # варіант 1: зібрати всі цифри вручну
+    # digits = ""                 # створюємо порожній рядок, куди будемо додавати цифри
+    # for ch in s:                # проходимо по кожному символу в рядку
+    #     if ch.isdigit():        # перевіряємо, чи символ є цифрою
+    #         digits += ch        # якщо так — додаємо його до рядка digits
+
+    # Варіант 2
+    digits = "".join(ch for ch in s if ch.isdigit())
+    if digits == "":
+        return np.nan
+    return plus + digits
+
+for col in possible_phone_cols + possible_fax_cols:
+    df[col] = df[col].apply(clean_phone)
+
+
+def title_if_str(s):
+    if pd.isna(s):
+        return np.nan
+    return str(s).title()
+
+city_cols = [c for c in df.columns if c.lower() in ("city", "city_name", "town")]
+
+address_cols = [c for c in df.columns if c.lower() in ("address")]
+
+name_cols = [c for c in df.columns if c.lower() in ("name", "first_name", "second_name", "last_name", "company_name")]
+
+name_title = city_cols + address_cols + name_cols
+
+if name_title:
+    for col in name_title:
+        df[col] = df[col].apply(title_if_str)
+    print("\n--- name of title ---")
+else:
+    print('\n--- haven `t name ---')
+
+
+
+print(df.head())
 
 ### **3. Приклади очищення окремих стовпців**
 
