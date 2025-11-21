@@ -195,29 +195,28 @@ company_LLC_Ltd = df.loc[mask_LLC_Ltd].copy()
 
 
 
-try:
-    first_10_cols_2_5 = df.iloc[:10,2:6]
-    print("\nПерші 10 рядків + колонки 2 - 5:")
-    print(first_10_cols_2_5)
-except Exception as e:
-    print("перші 10 рядків + колонки 2 - 5:", e)
+# ***6. Групування та статистика**
+# 6. Групування та статистика
+# кількість людей у кожному місті
+print(df["city"].value_counts())
+# ТОП-5 міст
+print(df["city"].value_counts().head(5))
+# ТОП-5 email-доменів
+print(df["email"].str.split("@").str[-1].value_counts().head(5))
 
-every_10th = df.iloc[::10, :].copy()
-print("\nevery_10th")
-print(every_10th)
-
-random_5 = df.sample(5)
-print("\random_5")
-print(random_5) 
+# кількість унікальних доменів
 
 
+df["domain"] = df["email"].str.split("@").str[-1]
 
-### **6. Групування та статистика**
+abb_by_city = df.groupby("city").agg(
+    people_count=("first_name", "count"), #створюємо стовбчик і потім кажемо, що чим наповнили: підрахунком імен
+    uniq_dom=("domain", "nunique")
+).sort_values("people_count", ascending=False).head(10)
 
-
-
-
-
+print(abb_by_city)
+count_by_city = df.groupby('city').size().reset_index(name='count')
+print(count_by_city)
 
 
 
