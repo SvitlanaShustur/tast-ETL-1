@@ -50,11 +50,7 @@ print(df)
 if COLUMNS_TO_DROP: # якщо є стовпці для видалення
     print("\n--- delete columns in lisr ---") # виводимо повідомлення
     df = df.drop(colums=[col for col in COLUMNS_TO_DROP if df in df.columns], errors="ignore") # видаляємо стовпці зі списку COLUMNS_TO_DROP, якщо вони є у DataFrame
-# другий варіант запису
-# # columns = [] # створюємо порожній список для збереження назв стовпців для видалення
-# # for col in COLUMNS_TO_DROP: # ітеруємося по списку COLUMNS_TO_DROP
-# #     if col in df_raw.columns: # якщо стовпець є у DataFrame
-# # #         columns.append(col) # додаємо назву стовпця до списку columns
+
 else:
     print("\n--- no columns to delete ---") # виводимо повідомлення, якщо немає стовпців для видалення
 
@@ -79,16 +75,6 @@ possible_web_cols = [c for c in df.columns if ("web" in c.lower() or "website" i
 possible_phone_cols = [c for c in df.columns if ("phone" in c.lower() or "telephon" in c.lower() or "tel" in c.lower() or "mobile" in c.lower())] # знаходимо всі стовпці, які містять "phone", "tel" або "mobile" у назві
 possible_fax_cols = [c for c in df.columns if ("fax" in c.lower())] # знаходимо всі стовпці, які містять "fax" у назві
 
-# генерація списку
-# [зміна_циклу (з приміненими операціями) for змінна_циклу in де_проходиться]
-# [0, 1, 2, 3, 4] 
-# # [n for n in range(4)]
-# print("\n--- possible columns ---")
-# print("Email columns:", possible_email_cols) # виводимо можливі стовпці з email
-# print("Web columns:", possible_web_cols) # виводимо можливі стовпці з web
-# print("Phone columns:", possible_phone_cols) # виводимо можливі стовпці з phone
-# print("Fax columns:", possible_fax_cols) # виводимо можливі стовпці з fax
-
 # Привести `email` та `web` до нижнього регістру.
 # Застосовуємо функцію стандартизації тексту до всіх стовпців типу object (рядок)
 for col in df.select_dtypes(include=['object']).columns: # ітеруємося по всіх стовпцях типу object
@@ -105,21 +91,9 @@ def clean_phone(x):
     if pd.isna(x): # перевіряємо на пропущене значення
         return np.nan # повертаємо NaN, якщо значення пропущенеs
     s = str(x)
-    # варіарт 1
-    # plus = ""   # перевіряємо, чи починається рядок із символу "+"
-    # if s.startswith("+"): # якщо так — зберігаємо цей знак у змінну plus
-    #     plus = "+"
-
-    # Варіант 2
-    plus = "+" if s.startswith("+") else "" # якщо рядок починається з "+", зберігаємо знак "+", інакше залишаємо порожній рядок
-
-    # варіант 1: зібрати всі цифри вручну
-    # digits = ""                 # створюємо порожній рядок, куди будемо додавати цифри
-    # for ch in s:                # проходимо по кожному символу в рядку
-    #     if ch.isdigit():        # перевіряємо, чи символ є цифрою
-    #         digits += ch        # якщо так — додаємо його до рядка digits
-
-    # Варіант 2
+    
+    plus = "+" if s.startswith("+") else "" # якщо рядок починається з "+", зберігаємо знак "+", інакше залишаємо порожній рядоr
+    
     digits = "".join(ch for ch in s if ch.isdigit())
     if digits == "":
         return np.nan
@@ -149,11 +123,9 @@ if name_title:
 else:
     print('\n--- haven `t name ---')
 
+
 ### **3. Створення нових колонок (Feature Engineering)**
 df["full_name"] = df.first_name + " " + df.last_name
-
-# df1 = df["city2"].str.len() # як другий варіант
-# print(df1.head)
 
 df["city_length"] = df["city"].apply(len)
 # print(df.head)
@@ -171,9 +143,7 @@ gmail_user = df.loc[df["is_gmail"] == True].copy()
 # print(gmail_user)
 # print("Gmail users:", len(gmail_user))
 
-
 print(" Фільтрація за компаніями LLC або Ltd -----")
-
 # Створюємо маску: перевіряємо, чи містить назва компанії слова LLC або LTD 
 # у будь-якому регістрі (великі/малі літери).
 mask_LLC_Ltd = df["company_name"].str.contains(
@@ -196,15 +166,16 @@ word_count = df["company_name"].str.split().str.len()
 
 # Фільтруємо назви, де слів 4 або більше
 companies_4_words = df[word_count >= 4].copy()
-print(companies_4_words)
+print(f'В назві 4 слова {companies_4_words}')
 
 
 
 
 
 ### **5. Позиційна вибірка (iloc)**
-
-
+print("- Перші 10 рядків + колонки 2–5")
+df.iloc[0:10, 2:5]
+print("- Перші 10 рядків + колонки 2–5")
 
 # ***6. Групування та статистика**
 # 6. Групування та статистика
