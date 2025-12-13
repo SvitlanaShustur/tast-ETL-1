@@ -19,26 +19,25 @@ print(df.head(5)) # виводимо перші 5 записів на екран
 print("\n---  info ---")
 df.info() # отримуємо інформацію про DataFrame
 
-# print("\n---  describe ---")
-# df.describe() # отримуємо статистичний опис даних
+print("\n---  describe ---")
+df.describe() # отримуємо статистичний опис даних
 
-# print("\n---  describe for str ---")
-# print(df.describe(include=[object]).T) # 
+print("\n---  describe for str ---")
+print(df.describe(include=[object]).T) # 
 
-# print("\n---  isna / null  ---")
-# print(df.isna().sum().sort_values(ascending=False).head(20)) # перевіряємо на наявність пропущених значень. Сортуємо за спаданням та виводимо перші 20
+print("\n---  isna / null  ---")
+print(df.isna().sum().sort_values(ascending=False).head(20)) # перевіряємо на наявність пропущених значень. Сортуємо за спаданням та виводимо перші 20
 
-# print("\n---  duplicated ---")
-# print(df.duplicated().sum()) # перевіряємо на наявність дублікатів
+print("\n---  duplicated ---")
+print(df.duplicated().sum()) # перевіряємо на наявність дублікатів
 
-# print("\n---  List colums 1 ---") # виводимо список стовпців
-# # print(df.columns.tolist()) # виводимо список стовпців у вигляді списку
-# list_col = df.columns # зберігаємо список стовпців у змінну
-# print(list(list_col)) # виводимо список стовпців у вигляді списку
+print("\n---  List colums 1 ---") # виводимо список стовпців
+list_col = df.columns # зберігаємо список стовпців у змінну
+print(list(list_col)) # виводимо список стовпців у вигляді списку
 
-# print("\n---  List colums 2 ---") # виводимо список стовпців з індексами
-# for i, col in enumerate(df.columns): # виводимо індекс та назву кожного стовпця
-#     print(f"{i:02d}. {col}") # виводимо індекс та назву стовпця з провідними нулями
+print("\n---  List colums 2 ---") # виводимо список стовпців з індексами
+for i, col in enumerate(df.columns): # виводимо індекс та назву кожного стовпця
+    print(f"{i:02d}. {col}") # виводимо індекс та назву стовпця з провідними нулями
 
 
 
@@ -170,12 +169,13 @@ print(f'В назві 4 слова {companies_4_words}')
 
 
 
-
-
 ### **5. Позиційна вибірка (iloc)**
 print("- Перші 10 рядків + колонки 2–5")
-df.iloc[0:10, 2:5]
-print("- Перші 10 рядків + колонки 2–5")
+print(df.iloc[0:10, 2:5])
+print("-  Кожний 10-й рядок  ")
+print(df.iloc[::10])
+print("- 5 випадкових рядків ")
+print(df.sample(5, random_state=42))
 
 # ***6. Групування та статистика**
 # 6. Групування та статистика
@@ -200,28 +200,3 @@ print(abb_by_city)
 count_by_city = df.groupby('city').size().reset_index(name='count')
 print(count_by_city)
 
-
-
-
-#   3. Приклади очищення окремих стовпців**
-
-#### Перевіряємо записи у стовпці "email", "web", "phone1", "phone2"
-# print(df['first_name'].head(5)) # виводимо перші 5 записів стовпця "first_name"
-#
-# # df = df.drop("phone2", axis=1) # видаляємо стовпець "phone2"
-# df['email'] = df['email'].str.lower()
-# df['web'] = df['web'].str.lower()
-
-# df['phone1_1'] = df['phone1'].copy() # створюємо копію стовпця "phone1"
-# df['phone1_1'] = df['phone1_1'].astype(str).str.replace('-', '', regex=True)    # видаляємо дефіси
-# df['phone1_2'] = df['phone1_1'].copy() # створюємо копію стовпця "phone1_1"
-# df['phone1_2'] = df['phone1_1'].str[1:] # видаляємо перший символ (0)
-# # print(df['phone1_2'].head(5))
-
-# df['telephon'] = '+44 ' + df['phone1_2'] # додаємо код країни +44
-# df['telephon'] = (
-#     df['telephon'].str[:6] + ' ' +  # Беремо перші 6 символів (+441944) і додаємо пробіл
-#     df['telephon'].str[6:10] + " " + # Додаємо наступні 4 символи (7700) і додаємо пробіл
-#     df['telephon'].str[10:14]               # Додаємо останні 4 символи (1234)
-# )  # +44 770
-# print(df['telephon'].head(5))
